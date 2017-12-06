@@ -52,7 +52,15 @@ def post_list(request):
     post_list_initial = Post.objects.active()
     if request.user.is_staff or request.user.is_superuser:
         post_list_initial = Post.objects.all()
-    paginator = Paginator(post_list_initial, 8)
+    query = request.GET.get("q")
+    if query:
+        post_list_initial = post_list_initial.filter(
+            Q(title__icontains=query) |
+            Q(content__icontains=query) |
+            Q(user__first_name__icontains=query) |
+            Q(user__last_name__icontains=query)
+        ).distinct()
+    paginator = Paginator(post_list_initial, 3)
     page = request.GET.get('page')
     try:
         post_list = paginator.page(page)
