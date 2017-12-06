@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% block content %}
+        {% for post in post_list %}
+            <div class="post-preview-container">
+                {% if post.image %}
+                    <img src="{{ post.image.url }}" class="post-preview-image"/>
+                {% endif %}
+                <h3><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h3>
+                {% if post.draft %}
+                    <h3>Draft
+                        {% if post.published > today %} - Future Post{% endif %}
+                    </h3>
+                {% endif %}
+                <p>Author:
+                    {% if post.user.get_full_name %}
+                        {{ post.user.get_full_name }}
+                    {% else %}
+                        {{ post.user }}
+                    {% endif %}
+                </p>
+                <span class="post-timestamp">Published: {{ post.timestamp|timesince }} ago.</span>
+                {{ post.content|linebreaks|truncatechars:300 }}
+            </div>
+        {% endfor %}
+
+        <div class="pagination">
+            <span class="step-links">
+                {% if post_list.has_previous %}
+                    <a href="?page={{ post_list.previous_page_number }}">previous</a>
+                {% endif %}
+
+                <span class="current">
+                    Page {{ post_list.number }} of {{ post_list.paginator.num_pages }}.
+                </span>
+
+                {% if post_list.has_next %}
+                    <a href="?page={{ post_list.next_page_number }}">next</a>
+                {% endif %}
+            </span>
+        </div>
+    {% endblock %}
+
+
+</body>
+</html>

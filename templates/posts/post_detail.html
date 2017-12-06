@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load urlify %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{{ post.title }}{% endblock %}</title>
+</head>
+<body>
+{%  block content %}
+    <div class="post-container">
+        <h1 class="post-title">{{ post.title }}</h1>
+        {%  if post.image %}
+            <img src="{{ post.image.url }}" class="post-main-image"/>
+        {% endif %}
+        <p>Author:
+            {% if post.user.get_full_name %}
+                {{ post.user.get_full_name }}
+            {% else %}
+                {{ post.user }}
+            {% endif %}
+        </p>
+        <span class="post-timestamp">Published: {{ post.timestamp }} ago.</span>
+        {{ post.content|linebreaks }}<br>
+
+    <div class="fb-comments" data-href="{{ request.build_absolute_uri }}" data-numposts="5"></div>
+
+    </div>
+{% endblock %}
+
+</body>
+</html>
